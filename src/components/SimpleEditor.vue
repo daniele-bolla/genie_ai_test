@@ -1,6 +1,5 @@
 <script>
 import { Fragment } from "vue-fragment";
-import { content } from "@/data/Q1-sample-text.json";
 
 const isEmptyObj = obj => {
   return obj && Object.keys(obj).length == 0;
@@ -21,13 +20,19 @@ const formattedAttrs = attributes => {
 
 export default {
   name: "SimpleEditor",
+  props: {
+    content: {
+      type: Array,
+      default: () => []
+    }
+  },
   render(createElement) {
     const parseContent = ({ content, type, text, attrs }) => {
       const tag = getTag(type);
       const innerHtml = content ? content.map(parseContent) : text;
       return createElement(tag, { ...formattedAttrs(attrs) }, innerHtml);
     };
-    const parsedContent = content.map(parseContent);
+    const parsedContent = this.content.map(parseContent);
     return createElement("article", parsedContent);
   }
 };
