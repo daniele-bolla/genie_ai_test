@@ -1,16 +1,16 @@
 <template>
   <div id="app">
-    <SimpleEditor/>
+    <SimpleEditor />
   </div>
 </template>
 
 <script>
-import SimpleEditor from './components/SimpleEditor.vue'
+import SimpleEditor from "./components/SimpleEditor.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     SimpleEditor
   }
-}
+};
 </script>
