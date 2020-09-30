@@ -4,19 +4,18 @@
   </div>
 </template>
 
-<script>
-import SimpleEditor from "./components/SimpleEditor.vue";
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
 import { content } from "@/data/Q1-sample-text.json";
 
-export default {
-  name: "App",
+import SimpleEditor from "./components/SimpleEditor.vue";
+
+@Component({
   components: {
     SimpleEditor
-  },
-  data() {
-    return {
-      content
-    };
   }
-};
+})
+export default class App extends Vue {
+  private content = content;
+}
 </script>

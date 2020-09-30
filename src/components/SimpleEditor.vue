@@ -1,39 +1,54 @@
-<script>
+<script lang="ts">
 import { Fragment } from "vue-fragment";
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { VNode, CreateElement } from "vue";
 
-const isEmptyObj = obj => {
+interface Attributes {
+  textCSS?: object;
+  blockCSS?: object;
+  font?: string;
+  alignement?: string;
+}
+interface Content {
+  attrs: object;
+  content: Array<Content>;
+  type: string;
+  text: string;
+}
+const isEmptyObj = (obj: object) => {
   return obj && Object.keys(obj).length == 0;
 };
-const switchCase = (cases, key, def) => (key in cases ? cases[key]() : def);
-const getTag = type => {
+const switchCase = (
+  cases: Record<string, Function>,
+  key: keyof typeof cases,
+  def: unknown
+) => (key in cases ? cases[key]() : def);
+const getTag = (type: string) => {
   const typeCases = {
     paragraph: () => "p",
     text: () => Fragment
   };
   return switchCase(typeCases, type, type);
 };
-const formattedAttrs = attributes => {
+const formattedAttrs = (attributes: Attributes): Record<string, unknown> => {
   const { blockCSS, textCSS, ...attrs } = attributes || {};
   const style = textCSS && !isEmptyObj(textCSS) ? textCSS : blockCSS;
   return { attrs, style };
 };
 
-export default {
-  name: "SimpleEditor",
-  props: {
-    content: {
-      type: Array,
-      default: () => []
-    }
-  },
-  render(createElement) {
-    const parseContent = ({ content, type, text, attrs }) => {
+@Component
+export default class SimpleEditor extends Vue {
+  @Prop() private content!: Array<Content>;
+  render(createElement: CreateElement): VNode {
+    const parseContent = ({ content, type, text, attrs }: Content): VNode => {
       const tag = getTag(type);
-      const innerHtml = content ? content.map(parseContent) : text;
+      const innerHtml: VNode[] | string = content
+        ? content.map(parseContent)
+        : text;
       return createElement(tag, { ...formattedAttrs(attrs) }, innerHtml);
     };
     const parsedContent = this.content.map(parseContent);
     return createElement("article", parsedContent);
   }
-};
+}
 </script>
