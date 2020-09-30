@@ -7,10 +7,12 @@ interface Attributes {
   textCSS?: object;
   blockCSS?: object;
   font?: string;
-  alignement?: string;
+  alignment?: string;
+  bold?: string;
+  italic?: string;
 }
 interface Content {
-  attrs: object;
+  attrs: Attributes;
   content: Array<Content>;
   type: string;
   text: string;
@@ -42,10 +44,10 @@ export default class SimpleEditor extends Vue {
   render(createElement: CreateElement): VNode {
     const parseContent = ({ content, type, text, attrs }: Content): VNode => {
       const tag = getTag(type);
-      const innerHtml: VNode[] | string = content
-        ? content.map(parseContent)
-        : text;
-      return createElement(tag, { ...formattedAttrs(attrs) }, innerHtml);
+      const innerHtml = (): VNode[] | string => {
+        return content ? content.map(parseContent) : text;
+      };
+      return createElement(tag, { ...formattedAttrs(attrs) }, innerHtml());
     };
     const parsedContent = this.content.map(parseContent);
     return createElement("article", parsedContent);

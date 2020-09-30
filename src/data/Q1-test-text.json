@@ -1,0 +1,47 @@
+{
+  "type": "doc",
+  "content": [
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "span",
+          "content": [
+            {
+              "type": "text",
+              "text": "Title"
+            }
+          ],
+          "attrs": {
+            "textCSS": {
+              "fontFamily": "Times New Roman",
+              "fontWeight": "bold"
+            },
+            "bold": true,
+            "font": "Times New Roman"
+          }
+        }
+      ],
+      "attrs": {
+        "id": "title",
+        "blockCSS": {
+          "textAlign": "center"
+        },
+        "alignment": "center"
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "content": [],
+          "attrs": {}
+        }
+      ],
+      "attrs": {
+        "blockCSS": {}
+      }
+    }
+  ]
+}
