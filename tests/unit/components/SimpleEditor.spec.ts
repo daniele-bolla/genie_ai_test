@@ -17,10 +17,11 @@ describe("SimpleEditor", () => {
   it("renders all attributes correctly", () => {
     const span = wrapper.find("span");
 
-    expect(Object.keys(span.attributes()).length).toBe(3);
+    expect(Object.keys(span.attributes()).length).toBe(4);
     expect(span.attributes().bold).toBeTruthy();
     expect(span.attributes().font).toBeTruthy();
     expect(span.attributes().style).toBeTruthy();
+    expect(span.attributes().underline).toBeTruthy();
   });
   it("renders the style correctly", () => {
     const title = wrapper.find("p[id=title]");

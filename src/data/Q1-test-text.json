@@ -15,10 +15,16 @@
           "attrs": {
             "textCSS": {
               "fontFamily": "Times New Roman",
-              "fontWeight": "bold"
+              "fontWeight": "bold",
+              "textDecoration": "underline",
+              "textDecorationStyle": "solid"
             },
             "bold": true,
-            "font": "Times New Roman"
+            "font": "Times New Roman",
+            "underline": {
+              "val": "single",
+              "color": null
+            }
           }
         }
       ],
