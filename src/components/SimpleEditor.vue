@@ -4,12 +4,32 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { VNode, CreateElement } from "vue";
 
 interface Attributes {
-  textCSS?: object;
-  blockCSS?: object;
+  textCSS: object;
+  blockCSS: object;
+  font: string;
+  alignment: string;
+  bold: string;
+  italic: string;
+  underline: {};
+  match: [];
+}
+interface ReducedAttributes {
   font?: string;
   alignment?: string;
   bold?: string;
   italic?: string;
+  underline?: {};
+  match?: [];
+}
+interface AttributesAsString {
+  textCSS: object;
+  blockCSS: object;
+  font: string;
+  alignment: string;
+  bold: string;
+  italic: string;
+  underline: string;
+  marks: string;
 }
 interface Content {
   attrs: Attributes;
@@ -17,6 +37,7 @@ interface Content {
   type: string;
   text: string;
 }
+
 const isEmptyObj = (obj: object) => {
   return obj && Object.keys(obj).length == 0;
 };
@@ -25,6 +46,7 @@ const switchCase = (
   key: keyof typeof cases,
   def: unknown
 ) => (key in cases ? cases[key]() : def);
+
 const getTag = (type: string) => {
   const typeCases = {
     paragraph: () => "p",
@@ -32,10 +54,26 @@ const getTag = (type: string) => {
   };
   return switchCase(typeCases, type, type);
 };
-const formattedAttrs = (attributes: Attributes): Record<string, unknown> => {
+const stringifyObject = (obj: { [x: string]: unknown }): string => {
+  return Object.keys(obj).reduce((acc, attr) => {
+    const value = obj[attr];
+    acc += `${attr}:"${value}";`;
+    return acc;
+  }, "");
+};
+
+const formattedAttrs = (attributes: Attributes) => {
   const { blockCSS, textCSS, ...attrs } = attributes || {};
+
+  const stringifyAttrs = attrs => {
+    return Object.keys(attrs).reduce((acc, attr) => {
+      const value = attrs[attr];
+      acc[attr] = typeof value === "object" ? stringifyObject(value) : value;
+      return acc;
+    }, {});
+  };
   const style = textCSS && !isEmptyObj(textCSS) ? textCSS : blockCSS;
-  return { attrs, style };
+  return { attrs: stringifyAttrs(attrs), style };
 };
 
 @Component
