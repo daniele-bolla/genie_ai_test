@@ -18,10 +18,12 @@ describe("SimpleEditor", () => {
     const span = wrapper.find("span");
 
     expect(Object.keys(span.attributes()).length).toBe(4);
-    expect(span.attributes().bold).toBeTruthy();
-    expect(span.attributes().font).toBeTruthy();
-    expect(span.attributes().style).toBeTruthy();
-    expect(span.attributes().underline).toBeTruthy();
+    expect(span.attributes().bold).toBe("true");
+    expect(span.attributes().font).toBe("Times New Roman");
+    expect(span.attributes().style).toBe(
+      "font-family: Times New Roman; font-weight: bold; text-decoration: underline; text-decoration-style: solid;"
+    );
+    expect(span.attributes().underline).toBe('val:"single";color:"null";');
   });
   it("renders the style correctly", () => {
     const title = wrapper.find("p[id=title]");

@@ -2,7 +2,7 @@
   <div id="app">
     <input type="text" v-model="query" />
     <with-higlight :query="query">
-      <SimpleEditor ref="doc" :content="content" />
+      <SimpleEditor :content="content" />
     </with-higlight>
   </div>
 </template>
