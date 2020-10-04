@@ -14,6 +14,13 @@ describe("SimpleEditor", () => {
     expect(paragraphs.length).toBe(2);
     expect(spans.length).toBe(1);
   });
+  it("renders all spaces correctly", () => {
+    const paragraphs = wrapper.findAll("p");
+    const spans = wrapper.findAll("span");
+
+    expect(paragraphs.length).toBe(2);
+    expect(spans.length).toBe(1);
+  });
   it("renders all attributes correctly", () => {
     const span = wrapper.find("span");
 
