@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <input type="text" v-model="query" />
+    <button>Go to</button>
     <with-higlight :query="query">
       <SimpleEditor :content="content" />
     </with-higlight>
@@ -11,7 +12,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { content } from "@/data/Q1-sample-text.json";
 
-import SimpleEditor from "@/components/SimpleEditor.vue";
+import SimpleEditor from "@/components/SimpleEditor";
 import WithHiglight from "@/components/WithHiglight.vue";
 
 @Component({

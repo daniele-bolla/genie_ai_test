@@ -1,35 +1,22 @@
-<script lang="ts">
 import { Fragment } from "vue-fragment";
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { VNode, CreateElement } from "vue";
 
 interface Attributes {
-  textCSS: object;
-  blockCSS: object;
+  textCSS: Record<string, string>;
+  blockCSS: Record<string, string>;
   font: string;
   alignment: string;
   bold: string;
   italic: string;
-  underline: {};
-  match: [];
+  underline: Record<string, string>;
 }
 interface ReducedAttributes {
-  font?: string;
-  alignment?: string;
-  bold?: string;
-  italic?: string;
-  underline?: {};
-  match?: [];
-}
-interface AttributesAsString {
-  textCSS: object;
-  blockCSS: object;
   font: string;
   alignment: string;
   bold: string;
   italic: string;
-  underline: string;
-  marks: string;
+  underline: Record<string, string>;
 }
 interface Content {
   attrs: Attributes;
@@ -37,7 +24,6 @@ interface Content {
   type: string;
   text: string;
 }
-
 const isEmptyObj = (obj: object) => {
   return obj && Object.keys(obj).length == 0;
 };
@@ -46,7 +32,7 @@ const switchCase = (
   key: keyof typeof cases,
   def: unknown
 ) => (key in cases ? cases[key]() : def);
-
+type objToStringify = Record<string, string>;
 const getTag = (type: string) => {
   const typeCases = {
     paragraph: () => "p",
@@ -54,21 +40,20 @@ const getTag = (type: string) => {
   };
   return switchCase(typeCases, type, type);
 };
-const stringifyObject = (obj: { [x: string]: unknown }): string => {
-  return Object.keys(obj).reduce((acc, attr) => {
+const stringifyObject = (obj: objToStringify): string => {
+  return Object.keys(obj).reduce((acc, attr: keyof objToStringify) => {
     const value = obj[attr];
     acc += `${attr}:"${value}";`;
     return acc;
   }, "");
 };
-
 const formattedAttrs = (attributes: Attributes) => {
   const { blockCSS, textCSS, ...attrs } = attributes || {};
-
-  const stringifyAttrs = attrs => {
-    return Object.keys(attrs).reduce((acc, attr) => {
-      const value = attrs[attr];
-      acc[attr] = typeof value === "object" ? stringifyObject(value) : value;
+  const stringifyAttrs = (attrs: ReducedAttributes) => {
+    return Object.keys(attrs).reduce((acc: Record<string, string>, attr) => {
+      const value = attrs[attr as keyof ReducedAttributes];
+      acc[attr as keyof ReducedAttributes] =
+        value && typeof value === "object" ? stringifyObject(value) : value;
       return acc;
     }, {});
   };
@@ -88,7 +73,6 @@ export default class SimpleEditor extends Vue {
       return createElement(tag, { ...formattedAttrs(attrs) }, innerHtml());
     };
     const parsedContent = this.content.map(parseContent);
-    return createElement("article", parsedContent);
+    return createElement("div", parsedContent);
   }
 }
-</script>
