@@ -91,14 +91,7 @@ export default class WithHiglight extends Vue {
           .map(convertHTML)
           .map(escapeRegex)
           .join(")((?:\\s*(?:<\\/?\\w[^<>]*>)?\\s*)*)(") +
-        ")"; //.replace(/^\||\|$/g, "");
-
-      // const search = breakSearch.replace(
-      //   /\s/gm,
-      //   "((?:\\s*(?:<\\/?\\w[^<>]*>)?\\s*)*)"
-      // );
-      console.log("search", search);
-
+        ")";
       const regex = new RegExp(`${search}`, "gmi");
       const isMatching = this.orignal.match(regex);
       if (isMatching) {
@@ -122,11 +115,9 @@ export default class WithHiglight extends Vue {
                   : group.match(new RegExp(`<*?>`, "gmi"))
                   ? group.replace(
                       new RegExp(`(?<!<[^>]*)`, "gmi"),
-                      `<mark class="highlightText highlightText_${this.count}"> </mark>`
+                      `<mark class="highlightText highlightText_${this.count}">$&</mark>`
                     )
                   : "";
-              //console.log(acc);
-
               return acc;
             }, "");
           }
