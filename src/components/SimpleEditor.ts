@@ -67,8 +67,9 @@ export default class SimpleEditor extends Vue {
   render(createElement: CreateElement): VNode {
     const parseContent = ({ content, type, text, attrs }: Content): VNode => {
       const tag = getTag(type);
+      const textCaptureSpace = text == " " ? "\u00A0" : text;
       const innerHtml = (): VNode[] | string => {
-        return content ? content.map(parseContent) : text;
+        return content ? content.map(parseContent) : textCaptureSpace;
       };
       return createElement(tag, { ...formattedAttrs(attrs) }, innerHtml());
     };
