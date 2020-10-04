@@ -37,11 +37,12 @@ export default class WithHiglight extends Vue {
   get orignal() {
     return JSON.parse(JSON.stringify(this.$el.innerHTML))
       .replace(/<!--.*?-->/g, "")
-      .replace(/ fragment=".*?"/g, "");
+      .replace(/ fragment=".*?"/g, "")
+      .replace(/&nbsp;/g, " ");
   }
   @Watch("query") async onMatchChanged() {
     await delay(400);
-    if (!this.query || this.query.match(/\s+/g)) {
+    if (!this.query || this.query == " ") {
       this.$el.innerHTML = this.orignal;
       return;
     } else {
