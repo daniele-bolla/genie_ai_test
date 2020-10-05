@@ -1,6 +1,14 @@
+<template>
+  <div>
+    <slot v-bind:nav="{ count, currentFocused, prev, next }" name="nav"></slot>
+    <div ref="doc">
+      <slot name="content"></slot>
+    </div>
+  </div>
+</template>
+
 <script lang="ts">
 import { Component, Prop, Watch, Vue } from "vue-property-decorator";
-import { VNode, CreateElement } from "vue";
 
 const delay = (time: number) => {
   let timer;
@@ -32,34 +40,38 @@ const convertHTML = (entity: string) => {
 
 @Component
 export default class WithHiglight extends Vue {
+  private count = 0;
+  private currentFocused = 0;
   @Prop() private query!: string;
-  count = 0;
-  get orignal() {
-    return JSON.parse(JSON.stringify(this.$el.innerHTML))
+  get clearedContent() {
+    return (this.$refs.doc as HTMLElement).innerHTML
       .replace(/<!--.*?-->/g, "")
       .replace(/ fragment=".*?"/g, "")
       .replace(/&nbsp;/g, " ");
   }
   @Watch("query") async onMatchChanged() {
-    await delay(400);
-    if (!this.query || this.query == " ") {
-      this.$el.innerHTML = this.orignal;
+    await delay(300);
+    if (!this.query || this.query == "") {
+      this.count = 0;
+      this.currentFocused = 0;
+      (this.$refs.doc as HTMLElement).innerHTML = this.clearedContent;
       return;
     } else {
-      const search =
-        "(?<!<[^>]*)(" +
-        this.query
-          .split("")
-          .map(convertHTML)
-          .map(escapeRegex)
-          .join(")((?:\\s*(?:<\\/?\\w[^<>]*>)?\\s*)*)(") +
-        ")";
-      const regex = new RegExp(`${search}`, "gmi");
-      const isMatching = this.orignal.match(regex);
+      const escapeStringInTags = "(?<!<[^>]*)";
+      const includeTagsAsSpace = "((?:\\s*(?:<\\/?\\w[^<>]*>)?\\s*)*)";
+      const formattedQuery = this.query
+        .split("")
+        .map(convertHTML)
+        .map(escapeRegex)
+        .join(`)${includeTagsAsSpace}(`);
+      const search = `${escapeStringInTags}(${formattedQuery})`;
+      const searchRegex = new RegExp(`${search}`, "gmi");
+      const isMatching = this.clearedContent.match(searchRegex);
       if (isMatching) {
         this.count = 0;
-        const html = this.orignal.replaceAll(
-          regex,
+        this.currentFocused = 0;
+        const html = this.clearedContent.replace(
+          searchRegex,
           (match: string, ...args: Array<string>) => {
             const [, , ...groups] = args.reverse();
             this.count++;
@@ -77,23 +89,27 @@ export default class WithHiglight extends Vue {
             }, "");
           }
         );
-        this.$el.innerHTML = html;
+        (this.$refs.doc as HTMLElement).innerHTML = html;
       }
     }
   }
-  render(createElement: CreateElement): VNode {
-    return createElement(
-      "div",
-      {
-        scopedSlots: {
-          default: props => createElement("span", props.text)
-        }
-      },
-      this.$slots.default
-    );
+  prev() {
+    if (this.currentFocused > 1) {
+      this.currentFocused--;
+      this.goToMatch(this.currentFocused);
+    }
   }
-
+  next() {
+    if (this.currentFocused < this.count) {
+      this.currentFocused++;
+      this.goToMatch(this.currentFocused);
+    }
+  }
   private goToMatch(index: number) {
+    document
+      .querySelectorAll(`.highlightText--focused`)
+      .forEach(mark => mark?.classList.remove("highlightText--focused"));
+
     document
       .querySelector(`.highlightText_${index}`)
 
@@ -106,16 +122,37 @@ export default class WithHiglight extends Vue {
       .querySelectorAll(`.highlightText_${index}`)
       .forEach(mark => mark?.classList.add("highlightText--focused"));
   }
+  mounted() {
+    this.$nextTick(() => {
+      (this.$refs.doc as HTMLElement).innerHTML = this.clearedContent;
+    });
+  }
 }
 </script>
 
 <style>
+.nav {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  padding: 2rem;
+  display: flex;
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.6);
+}
+.nav__right {
+  margin-left: 3rem;
+}
+.nav__left {
+  display: flex;
+  flex-direction: column;
+}
 .highlightText {
   background: yellow;
-  transition: all 1.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
 }
 .highlightText--focused {
-  background: orange;
+  background: red;
   transform: scale(1.1);
 }
 </style>

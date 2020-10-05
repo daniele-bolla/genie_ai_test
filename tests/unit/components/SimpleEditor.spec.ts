@@ -1,5 +1,5 @@
 import { mount, Wrapper } from "@vue/test-utils";
-import SimpleEditor from "@/components/SimpleEditor.vue";
+import SimpleEditor from "@/components/SimpleEditor";
 import { content } from "@/data/Q1-test-text.json";
 
 describe("SimpleEditor", () => {
