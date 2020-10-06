@@ -82,7 +82,11 @@ export default class WithHiglight extends Vue {
                   : group.match(new RegExp(`<*?>`, "gmi"))
                   ? group.replace(
                       new RegExp(`(?<!<[^>]*)`, "gmi"),
-                      `<mark class="highlightText highlightText_${this.count}">$&</mark>`
+                      matchTags => {
+                        return matchTags === " "
+                          ? `<mark class="highlightText highlightText_${this.count}">${matchTags}</mark>`
+                          : matchTags;
+                      }
                     )
                   : "";
               return acc;

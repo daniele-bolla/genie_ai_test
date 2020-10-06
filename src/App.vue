@@ -5,7 +5,8 @@
         <template v-slot:nav="nav">
           <nav class="nav">
             <div class="nav__left">
-              <input type="text" v-model="query" /> Match {{ nav.nav.count }}
+              <input type="text" v-model="query" /> Match
+              {{ nav.nav.count }}
             </div>
             <div v-if="nav.nav.count" class="nav__right">
               <button
