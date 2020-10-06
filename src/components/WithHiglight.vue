@@ -42,9 +42,10 @@ const convertHTML = (entity: string) => {
 export default class WithHiglight extends Vue {
   private count = 0;
   private currentFocused = 0;
-  @Prop() private query!: string;
+  private contentWrapper!: HTMLElement;
+  @Prop() private readonly query!: string;
   get clearedContent() {
-    return (this.$refs.doc as HTMLElement).innerHTML
+    return this.contentWrapper.innerHTML
       .replace(/<!--.*?-->/g, "")
       .replace(/ fragment=".*?"/g, "")
       .replace(/&nbsp;/g, " ");
@@ -54,7 +55,7 @@ export default class WithHiglight extends Vue {
     if (!this.query || this.query == "") {
       this.count = 0;
       this.currentFocused = 0;
-      (this.$refs.doc as HTMLElement).innerHTML = this.clearedContent;
+      this.contentWrapper.innerHTML = this.clearedContent;
       return;
     } else {
       const escapeStringInTags = "(?<!<[^>]*)";
@@ -93,7 +94,7 @@ export default class WithHiglight extends Vue {
             }, "");
           }
         );
-        (this.$refs.doc as HTMLElement).innerHTML = html;
+        this.contentWrapper.innerHTML = html;
       }
     }
   }
@@ -110,11 +111,11 @@ export default class WithHiglight extends Vue {
     }
   }
   private goToMatch(index: number) {
-    document
+    this.contentWrapper
       .querySelectorAll(`.highlightText--focused`)
       .forEach(mark => mark?.classList.remove("highlightText--focused"));
 
-    document
+    this.contentWrapper
       .querySelector(`.highlightText_${index}`)
 
       ?.scrollIntoView({
@@ -122,13 +123,14 @@ export default class WithHiglight extends Vue {
         block: "center",
         inline: "center"
       });
-    document
+    this.contentWrapper
       .querySelectorAll(`.highlightText_${index}`)
       .forEach(mark => mark?.classList.add("highlightText--focused"));
   }
   mounted() {
+    this.contentWrapper = this.$refs.doc as HTMLElement;
     this.$nextTick(() => {
-      (this.$refs.doc as HTMLElement).innerHTML = this.clearedContent;
+      this.contentWrapper.innerHTML = this.clearedContent;
     });
   }
 }
