@@ -38,7 +38,8 @@ export default class WithHighlight extends Vue {
   @Prop() private readonly replacement!: string;
 
   @Watch("query") async onMatchChanged() {
-    await delay(200);
+    const delayTime = process.env.NODE_ENV === "test" ? 100 : 600;
+    await delay(delayTime);
     if (!this.query || this.query == "") {
       this.resetContent();
       return;

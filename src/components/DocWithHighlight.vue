@@ -53,7 +53,7 @@ import BaseButton from "@/components/BaseButton.vue";
 import BaseInput from "@/components/BaseInput.vue";
 import DocCompiler from "@/components/DocCompiler";
 import WithHighlight from "@/components/WithHighlight.vue";
-import { content } from "@/data/Q1-test-text-long.json";
+import { content } from "@/data/Q1-sample-text.json";
 import Stickyfill from "stickyfilljs";
 
 @Component({

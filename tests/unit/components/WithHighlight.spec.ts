@@ -9,6 +9,7 @@ const getSelectedText = (wrappers: Array<Wrapper<Vue>>) => {
     return acc;
   }, "");
 };
+const delayTime = 200;
 describe("WithHighlight", () => {
   it("highlights all matches", async () => {
     const query = "Text";
@@ -18,7 +19,7 @@ describe("WithHighlight", () => {
       }
     });
     wrapper.setProps({ query });
-    await delay(300);
+    await delay(delayTime);
     const { count } = wrapper.vm as any;
     const marks = wrapper.findAll(`.highlightText_1`);
     const selectedText = getSelectedText(marks.wrappers);
@@ -34,7 +35,7 @@ describe("WithHighlight", () => {
       }
     });
     wrapper.setProps({ query });
-    await delay(300);
+    await delay(delayTime);
     const { count } = wrapper.vm as any;
     const marks = wrapper.findAll(`.highlightText_1`);
     const selectedText = getSelectedText(marks.wrappers);
@@ -50,7 +51,7 @@ describe("WithHighlight", () => {
       }
     });
     wrapper.setProps({ query });
-    await delay(300);
+    await delay(delayTime);
     const { count } = wrapper.vm as any;
     const marks = wrapper.findAll(`.highlightText_1`);
     const selectedText = getSelectedText(marks.wrappers);
@@ -66,7 +67,7 @@ describe("WithHighlight", () => {
       }
     });
     wrapper.setProps({ query });
-    await delay(300);
+    await delay(delayTime);
     const { count } = wrapper.vm as any;
     const marks = wrapper.findAll(`.highlightText_1`);
     const selectedText = getSelectedText(marks.wrappers);
@@ -83,7 +84,7 @@ describe("WithHighlight", () => {
       }
     });
     wrapper.setProps({ query, replacement });
-    await delay(300);
+    await delay(delayTime);
     const { replace } = wrapper.vm as any;
     expect(replace()).toBeFalsy();
   });
