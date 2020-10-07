@@ -119,7 +119,7 @@ export default class WithHighlight extends Vue {
   private replace() {
     const searchRegex = createSearchRegex(this.query);
     const isMatching = this.originalContent.match(searchRegex);
-    if (!isMatching) return;
+    if (!isMatching || this.query === this.replacement) return false;
     const htmlReplaced = this.originalContent.replace(
       searchRegex,
       (match: string, ...args: Array<string>) => {
