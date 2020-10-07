@@ -1,11 +1,11 @@
 import { mount, Wrapper } from "@vue/test-utils";
-import SimpleEditor from "@/components/SimpleEditor";
+import DocCompiler from "@/components/DocCompiler";
 import { content } from "@/data/Q1-test-text.json";
 
-describe("SimpleEditor", () => {
+describe("DocCompiler", () => {
   let wrapper: Wrapper<Vue>;
   beforeEach(() => {
-    wrapper = mount(SimpleEditor, { propsData: { content } });
+    wrapper = mount(DocCompiler, { propsData: { content } });
   });
   it("renders all elements correctly", () => {
     const paragraphs = wrapper.findAll("p");

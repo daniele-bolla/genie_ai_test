@@ -1,33 +1,23 @@
 import { shallowMount, Wrapper } from "@vue/test-utils";
-import WithHiglight from "@/components/WithHiglight.vue";
+import { delay } from "@/utils";
+import WithHighlight from "@/components/WithHighlight.vue";
 import Vue from "vue";
 
-const delay = (time: number) => {
-  let timer;
-  clearTimeout(timer);
-  return new Promise(resolve => {
-    timer = setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
 const getSelectedText = (wrappers: Array<Wrapper<Vue>>) => {
   return wrappers.reduce((acc, mark) => {
     acc += mark.text() || " ";
     return acc;
   }, "");
 };
-jest.setTimeout(30000);
-describe("WithHiglight", () => {
+describe("WithHighlight", () => {
   it("highlights all matches", async () => {
     const query = "Text";
-    const wrapper = shallowMount(WithHiglight, {
+    const wrapper = shallowMount(WithHighlight, {
       slots: {
         content: "<p>Lorem Ipsum Search Text, text</p>"
       }
     });
     wrapper.setProps({ query });
-    await Vue.nextTick();
     await delay(300);
     const { count } = wrapper.vm as any;
     const marks = wrapper.findAll(`.highlightText_1`);
@@ -38,13 +28,12 @@ describe("WithHiglight", () => {
   });
   it("escapes html tags", async () => {
     const query = "Search Text";
-    const wrapper = shallowMount(WithHiglight, {
+    const wrapper = shallowMount(WithHighlight, {
       slots: {
         content: "<p>Lorem Ipsum <i>Search</i> Text</p>"
       }
     });
     wrapper.setProps({ query });
-    await Vue.nextTick();
     await delay(300);
     const { count } = wrapper.vm as any;
     const marks = wrapper.findAll(`.highlightText_1`);
@@ -55,13 +44,12 @@ describe("WithHiglight", () => {
   });
   it("highlights special regex chars", async () => {
     const query = "Search( Text, []|).";
-    const wrapper = shallowMount(WithHiglight, {
+    const wrapper = shallowMount(WithHighlight, {
       slots: {
         content: "<p>Lorem Ipsum <i>Search(</i> Text, []|)<span>.</span></p>"
       }
     });
     wrapper.setProps({ query });
-    await Vue.nextTick();
     await delay(300);
     const { count } = wrapper.vm as any;
     const marks = wrapper.findAll(`.highlightText_1`);
@@ -72,13 +60,12 @@ describe("WithHiglight", () => {
   });
   it("highlights special html entities", async () => {
     const query = "Search & Text";
-    const wrapper = shallowMount(WithHiglight, {
+    const wrapper = shallowMount(WithHighlight, {
       slots: {
         content: "<p>Lorem Ipsum Search &amp; Text</p>"
       }
     });
     wrapper.setProps({ query });
-    await Vue.nextTick();
     await delay(300);
     const { count } = wrapper.vm as any;
     const marks = wrapper.findAll(`.highlightText_1`);
@@ -86,5 +73,25 @@ describe("WithHiglight", () => {
 
     expect(count).toBe(1);
     expect(selectedText).toBe(query);
+  });
+  it("replces text correctly and highlight after", async () => {
+    const query = "Text to replace";
+    const replacement = "Text replaced";
+    const wrapper = shallowMount(WithHighlight, {
+      slots: {
+        content: "<p>Lorem Ipsum Search &amp; Text to replace</p>"
+      }
+    });
+    wrapper.setProps({ query, replacement });
+    await delay(300);
+    const { replace } = wrapper.vm as any;
+    replace();
+    wrapper.setProps({ query: replacement });
+    await delay(300);
+
+    const marks = wrapper.findAll(`.highlightText_1`);
+    const selectedText = getSelectedText(marks.wrappers);
+
+    expect(selectedText).toBe(replacement);
   });
 });

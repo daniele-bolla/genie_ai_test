@@ -1,6 +1,7 @@
 import { Fragment } from "vue-fragment";
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { VNode, CreateElement } from "vue";
+import { isEmptyObj, switchCase, stringifyObject } from "@/utils";
 
 interface Attributes {
   textCSS: Record<string, string>;
@@ -24,28 +25,13 @@ interface Content {
   type: string;
   text: string;
 }
-const isEmptyObj = (obj: object) => {
-  return obj && Object.keys(obj).length == 0;
-};
-const switchCase = (
-  cases: Record<string, Function>,
-  key: keyof typeof cases,
-  def: unknown
-) => (key in cases ? cases[key]() : def);
-type objToStringify = Record<string, string>;
+
 const getTag = (type: string) => {
   const typeCases = {
     paragraph: () => "p",
     text: () => Fragment
   };
   return switchCase(typeCases, type, type);
-};
-const stringifyObject = (obj: objToStringify): string => {
-  return Object.keys(obj).reduce((acc, attr: keyof objToStringify) => {
-    const value = obj[attr];
-    acc += `${attr}:"${value}";`;
-    return acc;
-  }, "");
 };
 const formattedAttrs = (attributes: Attributes) => {
   const { blockCSS, textCSS, ...attrs } = attributes || {};
@@ -62,7 +48,7 @@ const formattedAttrs = (attributes: Attributes) => {
 };
 
 @Component
-export default class SimpleEditor extends Vue {
+export default class DocCompiler extends Vue {
   @Prop() private content!: Array<Content>;
   render(createElement: CreateElement): VNode {
     const parseContent = ({ content, type, text, attrs }: Content): VNode => {
