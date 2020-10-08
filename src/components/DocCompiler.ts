@@ -49,7 +49,7 @@ const formattedAttrs = (attributes: Attributes) => {
 
 @Component
 export default class DocCompiler extends Vue {
-  @Prop() private content!: Array<Content>;
+  @Prop() private readonly content!: Array<Content>;
   render(createElement: CreateElement): VNode {
     const parseContent = ({ content, type, text, attrs }: Content): VNode => {
       const tag = getTag(type);

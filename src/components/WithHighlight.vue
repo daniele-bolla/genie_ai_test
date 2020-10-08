@@ -134,9 +134,10 @@ export default class WithHighlight extends Vue {
         return (
           contentMatched.reduce((acc: string, group: string, index: number) => {
             const currentReplaceStr = convertHTML(this.replacement[index]);
+            const isSpaceBefore = this.replacement[index - 1] == " ";
             acc +=
               isWithTags(group) && currentReplaceStr
-                ? this.replacement[index - 1] == " "
+                ? isSpaceBefore
                   ? group + currentReplaceStr
                   : currentReplaceStr + group
                 : isWithTags(group) && !currentReplaceStr
