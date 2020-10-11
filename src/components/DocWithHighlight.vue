@@ -3,12 +3,13 @@
     <with-highlight :query="query" :replacement="replacement">
       <template
         v-slot:nav="{
-          nav: { count, currentFocused, prev, next, replace }
+          nav: { count, currentFocused, prev, next, replace, htmlContent }
         }"
       >
+        <div v-html="htmlContent"></div>
         <nav class="nav">
           <div class="nav__left">
-            <base-input v-model="query" placeholder="Find" />
+            <base-input name="find" v-model="query" placeholder="Find" />
             <div class="nav__left__bottom">
               <h6>{{ currentFocused }} of {{ count }}</h6>
               <div>
@@ -27,7 +28,11 @@
             </div>
           </div>
           <div class="nav__right">
-            <base-input v-model="replacement" placeholder="Replace">
+            <base-input
+              name="replace"
+              v-model="replacement"
+              placeholder="Replace"
+            >
               <template v-slot:postaddon>
                 <base-button
                   :disabled="!count || query == replacement"

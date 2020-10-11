@@ -11,7 +11,9 @@
 </template>
 
 <script lang="ts">
-import { convertHTML, escapeRegex, delay } from "@/utils";
+import { convertHTML, escapeRegex } from "@/utils";
+import { delay } from "@/delay";
+
 const createSearchRegex = (query: string) => {
   const escapeStringInTags = "(?<!<[^>]*)";
   const includeTagsAsSpace = "((?:\\s*(?:<\\/?\\w[^<>]*>)?\\s*)*)";
@@ -38,8 +40,6 @@ export default class WithHighlight extends Vue {
   @Prop() private readonly replacement!: string;
 
   @Watch("query") async onMatchChanged() {
-    const delayTime = process.env.NODE_ENV === "test" ? 100 : 600;
-    await delay(delayTime);
     if (!this.query || this.query == "") {
       this.resetContent();
       return;
@@ -49,6 +49,8 @@ export default class WithHighlight extends Vue {
       if (isMatching) {
         this.resetCount();
         const highlightedContent = this.highlightContent(searchRegex);
+        const delayTime = 600;
+        await delay(delayTime);
         this.contentWrapper.innerHTML = highlightedContent;
       } else {
         this.resetContent();

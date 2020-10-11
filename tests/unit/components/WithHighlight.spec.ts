@@ -1,5 +1,5 @@
 import { shallowMount, Wrapper } from "@vue/test-utils";
-import { delay } from "@/utils";
+import { delay } from "@/delay";
 import WithHighlight from "@/components/WithHighlight.vue";
 import Vue from "vue";
 
@@ -9,7 +9,12 @@ const getSelectedText = (wrappers: Array<Wrapper<Vue>>) => {
     return acc;
   }, "");
 };
-const delayTime = 200;
+jest.mock("@/delay", () => ({
+  delay: jest.fn(() => {
+    return Promise.resolve();
+  })
+}));
+
 describe("WithHighlight", () => {
   it("highlights all matches", async () => {
     const query = "Text";
@@ -19,27 +24,27 @@ describe("WithHighlight", () => {
       }
     });
     wrapper.setProps({ query });
-    await delay(delayTime);
+    await delay(0);
+    await Vue.nextTick();
     const { count } = wrapper.vm as any;
     const marks = wrapper.findAll(`.highlightText_1`);
     const selectedText = getSelectedText(marks.wrappers);
-
     expect(count).toBe(2);
     expect(selectedText).toBe(query);
   });
   it("escapes html tags", async () => {
     const query = "Search Text";
-    const wrapper = shallowMount(WithHighlight, {
+    const wrapper: Wrapper<Vue> = shallowMount(WithHighlight, {
       slots: {
         content: "<p>Lorem Ipsum <i>Search</i> Text</p>"
       }
     });
     wrapper.setProps({ query });
-    await delay(delayTime);
+    await delay(0);
+    await Vue.nextTick();
     const { count } = wrapper.vm as any;
     const marks = wrapper.findAll(`.highlightText_1`);
     const selectedText = getSelectedText(marks.wrappers);
-
     expect(count).toBe(1);
     expect(selectedText).toBe(query);
   });
@@ -51,11 +56,11 @@ describe("WithHighlight", () => {
       }
     });
     wrapper.setProps({ query });
-    await delay(delayTime);
+    await delay(0);
+    await Vue.nextTick();
     const { count } = wrapper.vm as any;
     const marks = wrapper.findAll(`.highlightText_1`);
     const selectedText = getSelectedText(marks.wrappers);
-
     expect(count).toBe(1);
     expect(selectedText).toBe(query);
   });
@@ -67,11 +72,11 @@ describe("WithHighlight", () => {
       }
     });
     wrapper.setProps({ query });
-    await delay(delayTime);
+    await delay(0);
+    await Vue.nextTick();
     const { count } = wrapper.vm as any;
     const marks = wrapper.findAll(`.highlightText_1`);
     const selectedText = getSelectedText(marks.wrappers);
-
     expect(count).toBe(1);
     expect(selectedText).toBe(query);
   });
@@ -84,7 +89,8 @@ describe("WithHighlight", () => {
       }
     });
     wrapper.setProps({ query, replacement });
-    await delay(delayTime);
+    await delay(0);
+    await Vue.nextTick();
     const { replace } = wrapper.vm as any;
     expect(replace()).toBeFalsy();
   });

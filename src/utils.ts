@@ -1,12 +1,3 @@
-export const delay = (time: number) => {
-  let timer;
-  clearTimeout(timer);
-  return new Promise(resolve => {
-    timer = setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
 export const escapeRegex = (str: string) => {
   const escapedStr = str.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
   return escapedStr;
