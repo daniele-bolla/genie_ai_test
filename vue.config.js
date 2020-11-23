@@ -6,5 +6,5 @@ module.exports = {
       }
     }
   },
-  publicPath: "/vue_htmlhighlight/"
+  publicPath: "/vue_html_highlight/"
 };
