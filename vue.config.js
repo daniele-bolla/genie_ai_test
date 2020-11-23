@@ -6,5 +6,5 @@ module.exports = {
       }
     }
   },
-  publicPath: "/genie_ai_test/"
+  publicPath: "/vue_htmlhighlight/"
 };
